@@ -1136,6 +1136,56 @@ html[data-mode="bold"] .footer { background: #0e0c08; }
   .footer-grid { grid-template-columns: 1fr; }
 }
 
+
+/* ── Cookie banner ──────────────────────────────────────────── */
+.cookie-banner {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9000;
+  background: var(--fg);
+  color: var(--bg);
+  padding: 18px var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  box-shadow: 0 -4px 24px rgba(0,0,0,.18);
+  animation: slideUp .3s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.cookie-banner p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--bg);
+  opacity: .88;
+  max-width: 72ch;
+}
+.cookie-banner a { color: var(--bg); text-decoration: underline; opacity: .75; }
+.cookie-banner a:hover { opacity: 1; }
+.cookie-banner-btns {
+  display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap;
+}
+.cookie-accept {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 999px;
+  padding: 10px 22px; font: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s;
+}
+.cookie-accept:hover { background: color-mix(in oklab, var(--accent) 85%, #000); }
+.cookie-decline {
+  background: transparent; color: var(--bg);
+  border: 1px solid rgba(255,255,255,.3); border-radius: 999px;
+  padding: 10px 22px; font: inherit; font-size: 13px;
+  cursor: pointer; white-space: nowrap; opacity: .75;
+  transition: opacity .15s, border-color .15s;
+}
+.cookie-decline:hover { opacity: 1; border-color: rgba(255,255,255,.6); }
+
   </style>
 </head>
 <body>
@@ -1291,7 +1341,9 @@ window.MENU_DATA = {
 //     return (
 //       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
 //         Hello
-//         <TweaksPanel>
+//         <CookieBanner onNav={onNav} />
+
+      <TweaksPanel>
 //           <TweakSection label="Typography" />
 //           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
 //                        onChange={(v) => setTweak('fontSize', v)} />
@@ -2487,7 +2539,101 @@ function FundingPage({ onNav }) {
 
 }
 
-Object.assign(window, { HomePage, MenuPage, GalleryPage, AboutPage, ContactPage, FundingPage });
+
+/* ─────────────────────────────────────────────────────────────
+   PRIVACY — Adatkezelési tájékoztató
+───────────────────────────────────────────────────────────── */
+function PrivacyPage({ onNav }) {
+  const sections = [
+    {
+      title: "Adatkezelő adatai",
+      body: React.createElement(React.Fragment, null,
+        React.createElement("p", null, React.createElement("b", null, "Cégnév:"), " TÉSZTABÁZIS KFT."),
+        React.createElement("p", null, React.createElement("b", null, "Székhely:"), " Tóth Kálmán tér 5., 6500 Baja"),
+        React.createElement("p", null, React.createElement("b", null, "E-mail:"), " ", React.createElement("a", {href:"mailto:tesztabaziskft@gmail.com"}, "tesztabaziskft@gmail.com")),
+        React.createElement("p", null, React.createElement("b", null, "Telefon:"), " ", React.createElement("a", {href:"tel:+36307556846"}, "+36 30 755 6846"))
+      )
+    },
+    {
+      title: "Milyen adatokat gyűjtünk?",
+      body: React.createElement("p", null, "Az asztalfoglaló és kapcsolatfelvételi űrlapon megadott adatokat kezeljük: név, e-mail cím, telefonszám, foglalás időpontja és az üzenet szövege. Ezeket kizárólag a foglalás visszaigazolásához és a veled való kapcsolattartáshoz használjuk.")
+    },
+    {
+      title: "Sütik (cookie-k)",
+      body: React.createElement("p", null, "Weboldalunk kizárólag az oldal működéséhez elengedhetetlen sütiket használ (pl. cookie-hozzájárulás tárolása). Harmadik fél elemzési vagy marketing sütiket nem alkalmazunk.")
+    },
+    {
+      title: "Az adatkezelés jogalapja",
+      body: React.createElement("p", null, "Az adatkezelés jogalapja az érintett önkéntes hozzájárulása (GDPR 6. cikk (1) bekezdés a) pont), amelyet az űrlap beküldésével adsz meg.")
+    },
+    {
+      title: "Adatmegőrzés",
+      body: React.createElement("p", null, "A beérkezett foglalási/üzenet adatokat legfeljebb 1 évig őrizzük meg, ezt követően töröljük. Ha nem kerül sor foglalásra, az adatokat haladéktalanul töröljük.")
+    },
+    {
+      title: "Adattovábbítás",
+      body: React.createElement("p", null, "Személyes adatait harmadik félnek nem adjuk át, kivéve ha erre jogszabály kötelez bennünket. Az adatokat az Európai Unión kívülre nem továbbítjuk.")
+    },
+    {
+      title: "Jogaid",
+      body: React.createElement(React.Fragment, null,
+        React.createElement("p", null, "A GDPR alapján az alábbi jogok illetnek meg:"),
+        React.createElement("ul", {style:{paddingLeft:20,marginTop:10,display:"flex",flexDirection:"column",gap:6}},
+          React.createElement("li", null, React.createElement("b", null, "Hozzáférés joga:"), " kérheted, hogy tájékoztassunk az általunk kezelt adataidról."),
+          React.createElement("li", null, React.createElement("b", null, "Helyesbítés joga:"), " kérheted a hibás adatok javítását."),
+          React.createElement("li", null, React.createElement("b", null, "Törlés joga:"), " kérheted adataid törlését."),
+          React.createElement("li", null, React.createElement("b", null, "Tiltakozás joga:"), " tiltakozhatsz az adatkezelés ellen.")
+        ),
+        React.createElement("p", {style:{marginTop:12}}, "Kérelmeidet az alábbi e-mail címre küldheted: ", React.createElement("a", {href:"mailto:tesztabaziskft@gmail.com"}, "tesztabaziskft@gmail.com"))
+      )
+    },
+    {
+      title: "Panasztétel",
+      body: React.createElement("p", null, "Ha úgy érzed, hogy megsértettük adatkezelési jogaidat, panaszt tehetsz a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH): ", React.createElement("a", {href:"https://www.naih.hu",target:"_blank",rel:"noopener"}, "www.naih.hu"))
+    },
+    {
+      title: "Utolsó frissítés",
+      body: React.createElement("p", null, "2026. május")
+    }
+  ];
+
+  return (
+    <main className="page" data-screen-label="Adatkezelés">
+      <div className="container" style={{ paddingTop: "clamp(72px, 8vw, 120px)", paddingBottom: "clamp(48px, 6vw, 96px)" }}>
+
+        <div className="eyebrow" style={{ marginBottom: 24 }}>Jogi tájékoztató</div>
+        <h1 style={{ fontFamily: "var(--display)", fontSize: "clamp(40px, 6vw, 80px)", lineHeight: 1.0, letterSpacing: "-.02em", marginBottom: 16 }}>
+          Adatkezelési<br />tájékoztató.
+        </h1>
+        <p style={{ fontSize: 16, color: "var(--fg-soft)", maxWidth: "60ch", lineHeight: 1.6, marginBottom: 56 }}>
+          A TÉSZTABÁZIS KFT. (Pinocchio Pizzéria) elkötelezett az adatvédelem iránt.
+          Az alábbiakban tájékoztatunk arról, hogyan kezeljük a személyes adataidat.
+        </p>
+
+        <div style={{ maxWidth: 760, display: "flex", flexDirection: "column", gap: 40 }}>
+          {sections.map((sec, i) => (
+            <div key={i} style={{ borderLeft: "2px solid var(--fg)", paddingLeft: 24 }}>
+              <h2 style={{ fontFamily: "var(--display)", fontSize: 26, lineHeight: 1.2, marginBottom: 12, color: "var(--fg)" }}>
+                {i + 1}. {sec.title}
+              </h2>
+              <div style={{ fontSize: 15.5, lineHeight: 1.7, color: "var(--fg-soft)" }}>
+                {sec.body}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 64, borderTop: "1px solid var(--line)", paddingTop: 28, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <span className="mono" style={{ color: "var(--fg-mute)" }}>// PINOCCHIO PIZZÉRIA · TÉSZTABÁZIS KFT. · 2026</span>
+          <button className="btn btn-ghost" onClick={() => onNav("home")}>← Vissza a kezdőlapra</button>
+        </div>
+
+      </div>
+    </main>
+  );
+}
+
+Object.assign(window, { HomePage, MenuPage, GalleryPage, AboutPage, ContactPage, FundingPage, PrivacyPage });
   </script>
 
   <script type="text/babel">
@@ -2614,6 +2760,7 @@ function Footer({ onNav }) {
               <li><a href="#" onClick={(e) => {e.preventDefault();onNav("gallery");}}>Galéria</a></li>
               <li><a href="#" onClick={(e) => {e.preventDefault();onNav("about");}}>Rólunk</a></li>
               <li><a href="#" onClick={(e) => {e.preventDefault();onNav("contact");}}>Kapcsolat</a></li>
+              <li><a href="#" onClick={(e) => {e.preventDefault();onNav("privacy");}}>Adatkezelés</a></li>
             </ul>
           </div>
 
@@ -2651,6 +2798,34 @@ function Footer({ onNav }) {
 
 }
 
+
+/* ─────────────────────────────────────────────────────────────
+   COOKIE BANNER
+───────────────────────────────────────────────────────────── */
+function CookieBanner({ onNav }) {
+  const [visible, setVisible] = React.useState(() => {
+    try { return !localStorage.getItem("pinocchio_cookie_ok"); } catch(e) { return true; }
+  });
+  const accept = () => {
+    try { localStorage.setItem("pinocchio_cookie_ok", "1"); } catch(e) {}
+    setVisible(false);
+  };
+  const decline = () => { setVisible(false); };
+  if (!visible) return null;
+  return (
+    <div className="cookie-banner" role="dialog" aria-label="Cookie tájékoztató">
+      <p>
+        Ez az oldal a működéshez szükséges sütiket használ. Bővebb tájékoztatásért olvasd el az{" "}
+        <a href="#" onClick={(e) => { e.preventDefault(); accept(); onNav("privacy"); }}>adatkezelési tájékoztatót</a>.
+      </p>
+      <div className="cookie-banner-btns">
+        <button className="cookie-decline" onClick={decline}>Elutasít</button>
+        <button className="cookie-accept" onClick={accept}>Elfogadom</button>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Tweaks defaults ─────────────────────────────────────── */
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "mode": "minimal",
@@ -2663,7 +2838,7 @@ function App() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [route, setRoute] = useState(() => {
     const h = (location.hash || "").replace("#/", "").replace("#", "");
-    const valid = ["home", "menu", "gallery", "about", "contact", "funding"];
+    const valid = ["home", "menu", "gallery", "about", "contact", "funding", "privacy"];
     return valid.includes(h) ? h : "home";
   });
 
@@ -2687,7 +2862,7 @@ function App() {
   useEffect(() => {
     const onHash = () => {
       const h = (location.hash || "").replace("#/", "").replace("#", "");
-      const valid = ["home", "menu", "gallery", "about", "contact", "funding"];
+      const valid = ["home", "menu", "gallery", "about", "contact", "funding", "privacy"];
       if (valid.includes(h)) setRoute(h);
     };
     window.addEventListener("hashchange", onHash);
@@ -2700,7 +2875,8 @@ function App() {
     gallery: GalleryPage,
     about: AboutPage,
     contact: ContactPage,
-    funding: FundingPage
+    funding: FundingPage,
+    privacy: PrivacyPage
   }[route];
 
   return (
@@ -2753,7 +2929,8 @@ function App() {
           { value: "gallery", label: "Galéria" },
           { value: "about", label: "Rólunk" },
           { value: "contact", label: "Kapcsolat" },
-          { value: "funding", label: "Széchenyi Terv (rejtett)" }]
+          { value: "funding", label: "Széchenyi Terv (rejtett)" },
+          { value: "privacy", label: "Adatkezelési tájékoztató" }]
           }
           onChange={(v) => onNav(v)} />
         
